@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(FetchContent)
+include(GNUInstallDirs)
 
 # update to contain more rust flags
 set(TOKENIZERS_CPP_RUST_FLAGS "")
@@ -100,7 +101,7 @@ if(MSVC)
 else()
   set(TOKENIZERS_RUST_LIB "${TOKENIZERS_CPP_CARGO_BINARY_DIR}/libtokenizers_c.a")
 endif()
-set(TOKENIZERS_CPP_INCLUDE ${TOKENIZERS_CPP_ROOT}/include)
+set(TOKENIZERS_CPP_INCLUDE ${TOKENIZERS_CPP_ROOT}/include/tokenizers-cpp)
 
 # NOTE: need to use cmake -E env to be portable in win
 add_custom_command(
@@ -152,3 +153,20 @@ target_link_libraries(tokenizers_c INTERFACE ${TOKENIZERS_RUST_LIB} ${TOKENIZERS
 add_library(tokenizers_cpp STATIC $<TARGET_OBJECTS:tokenizer_cpp_objs>)
 target_link_libraries(tokenizers_cpp PRIVATE tokenizers_c sentencepiece-static ${TOKENIZERS_CPP_LINK_LIBS})
 target_include_directories(tokenizers_cpp PUBLIC ${TOKENIZERS_CPP_INCLUDE})
+
+set(tokenizers_headers
+    include/tokenizers-cpp/tokenizers_c.h
+    include/tokenizers-cpp/tokenizers_cpp.h
+    )
+
+set_target_properties(tokenizers_cpp PROPERTIES PUBLIC_HEADER "${tokenizers_headers}")
+
+install(TARGETS tokenizers_cpp
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tokenizers-cpp
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+
+install(FILES ${CMAKE_BINARY_DIR}/libtokenizers_c.a
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
