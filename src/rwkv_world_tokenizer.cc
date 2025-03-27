@@ -95,6 +95,10 @@ class RWKVWorldTokenizer : public Tokenizer {
     return ids;
   }
 
+  std::string Decode(const std::vector<int32_t>& ids, bool skip_special_tokens) final {
+    return Decode(ids);
+  }
+
   std::string Decode(const std::vector<int32_t>& ids) final {
     std::string str;
     for (auto id : ids) {

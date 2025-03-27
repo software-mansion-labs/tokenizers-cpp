@@ -51,6 +51,8 @@ class Tokenizer {
    */
   virtual std::string Decode(const std::vector<int32_t>& ids) = 0;
 
+  virtual std::string Decode(const std::vector<int32_t>& ids, bool skip_special_tokens) = 0;
+
   /*!
    * \brief Returns the vocabulary size. Special tokens are considered.
    */

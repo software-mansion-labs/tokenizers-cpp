@@ -23,6 +23,10 @@ class SentencePieceTokenizer : public Tokenizer {
     return tokens;
   }
 
+  std::string Decode(const std::vector<int32_t>& ids, bool skip_special_tokens) final {
+    return Decode(ids);
+  }
+
   std::string Decode(const std::vector<int32_t>& ids) final {
     std::string text;
     sentence_piece_.Decode(ids, &text).IgnoreError();
